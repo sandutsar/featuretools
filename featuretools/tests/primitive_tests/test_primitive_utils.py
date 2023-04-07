@@ -1,23 +1,28 @@
 import os
 
-import numpy as np
-import pandas as pd
 import pytest
 
-from featuretools import list_primitives
+from featuretools import list_primitives, summarize_primitives
 from featuretools.primitives import (
+    AddNumericScalar,
     Age,
     Count,
     Day,
+    Diff,
     GreaterThan,
     Haversine,
+    IsFreeEmailDomain,
+    IsNull,
     Last,
     Max,
     Mean,
     Min,
     Mode,
     Month,
+    MultiplyBoolean,
+    NMostCommon,
     NumCharacters,
+    NumericLag,
     NumUnique,
     NumWords,
     PercentTrue,
@@ -29,15 +34,17 @@ from featuretools.primitives import (
     get_aggregation_primitives,
     get_default_aggregation_primitives,
     get_default_transform_primitives,
-    get_transform_primitives
+    get_transform_primitives,
 )
 from featuretools.primitives.base import PrimitiveBase
+from featuretools.primitives.base.transform_primitive_base import TransformPrimitive
 from featuretools.primitives.utils import (
+    _check_input_types,
     _get_descriptions,
+    _get_summary_primitives,
     _get_unique_input_types,
-    _roll_series_with_gap,
     list_primitive_files,
-    load_primitive_from_file
+    load_primitive_from_file,
 )
 from featuretools.utils.gen_utils import Library
 
@@ -48,50 +55,124 @@ def test_list_primitives_order():
     all_primitives.update(get_aggregation_primitives())
 
     for name, primitive in all_primitives.items():
-        assert name in df['name'].values
-        row = df.loc[df['name'] == name].iloc[0]
+        assert name in df["name"].values
+        row = df.loc[df["name"] == name].iloc[0]
         actual_desc = _get_descriptions([primitive])[0]
         if actual_desc:
-            assert actual_desc == row['description']
-        assert row['dask_compatible'] == (Library.DASK in primitive.compatibility)
-        assert row['valid_inputs'] == ', '.join(_get_unique_input_types(primitive.input_types))
-        assert row['return_type'] == getattr(primitive.return_type, '__name__', None)
+            assert actual_desc == row["description"]
+        assert row["dask_compatible"] == (Library.DASK in primitive.compatibility)
+        assert row["valid_inputs"] == ", ".join(
+            _get_unique_input_types(primitive.input_types),
+        )
+        expected_return_type = (
+            str(primitive.return_type) if primitive.return_type is not None else None
+        )
+        assert row["return_type"] == expected_return_type
 
-    types = df['type'].values
-    assert 'aggregation' in types
-    assert 'transform' in types
+    types = df["type"].values
+    assert "aggregation" in types
+    assert "transform" in types
 
 
 def test_valid_input_types():
     actual = _get_unique_input_types(Haversine.input_types)
-    assert actual == {'<ColumnSchema (Logical Type = LatLong)>'}
-    actual = _get_unique_input_types(GreaterThan.input_types)
-    assert actual == {'<ColumnSchema (Logical Type = Datetime)>',
-                      "<ColumnSchema (Semantic Tags = ['numeric'])>",
-                      '<ColumnSchema (Logical Type = Ordinal)>'}
+    assert actual == {"<ColumnSchema (Logical Type = LatLong)>"}
+    actual = _get_unique_input_types(MultiplyBoolean.input_types)
+    assert actual == {
+        "<ColumnSchema (Logical Type = Boolean)>",
+        "<ColumnSchema (Logical Type = BooleanNullable)>",
+    }
     actual = _get_unique_input_types(Sum.input_types)
     assert actual == {"<ColumnSchema (Semantic Tags = ['numeric'])>"}
 
 
 def test_descriptions():
-    primitives = {NumCharacters: 'Calculates the number of characters in a string.',
-                  Day: 'Determines the day of the month from a datetime.',
-                  Last: 'Determines the last value in a list.',
-                  GreaterThan: 'Determines if values in one list are greater than another list.'}
+    primitives = {
+        NumCharacters: "Calculates the number of characters in a given string, including whitespace and punctuation.",
+        Day: "Determines the day of the month from a datetime.",
+        Last: "Determines the last value in a list.",
+        GreaterThan: "Determines if values in one list are greater than another list.",
+    }
     assert _get_descriptions(list(primitives.keys())) == list(primitives.values())
+
+
+def test_get_descriptions_doesnt_truncate_primitive_description():
+    # single line
+    descr = _get_descriptions([IsNull])
+    assert descr[0] == "Determines if a value is null."
+
+    # multiple line; one sentence
+    descr = _get_descriptions([Diff])
+    assert (
+        descr[0]
+        == "Computes the difference between the value in a list and the previous value in that list."
+    )
+
+    # multiple lines; multiple sentences
+    class TestPrimitive(TransformPrimitive):
+        """This is text that continues on after the line break
+            and ends in a period.
+            This is text on one line without a period
+
+        Examples:
+            >>> absolute = Absolute()
+            >>> absolute([3.0, -5.0, -2.4]).tolist()
+            [3.0, 5.0, 2.4]
+        """
+
+        name = "test_primitive"
+
+    descr = _get_descriptions([TestPrimitive])
+    assert (
+        descr[0]
+        == "This is text that continues on after the line break and ends in a period. This is text on one line without a period"
+    )
+
+    # docstring ends after description
+    class TestPrimitive2(TransformPrimitive):
+        """This is text that continues on after the line break
+        and ends in a period.
+        This is text on one line without a period
+        """
+
+        name = "test_primitive"
+
+    descr = _get_descriptions([TestPrimitive2])
+    assert (
+        descr[0]
+        == "This is text that continues on after the line break and ends in a period. This is text on one line without a period"
+    )
 
 
 def test_get_default_aggregation_primitives():
     primitives = get_default_aggregation_primitives()
-    expected_primitives = [Sum, Std, Max, Skew, Min, Mean, Count, PercentTrue,
-                           NumUnique, Mode]
+    expected_primitives = [
+        Sum,
+        Std,
+        Max,
+        Skew,
+        Min,
+        Mean,
+        Count,
+        PercentTrue,
+        NumUnique,
+        Mode,
+    ]
     assert set(primitives) == set(expected_primitives)
 
 
 def test_get_default_transform_primitives():
     primitives = get_default_transform_primitives()
-    expected_primitives = [Age, Day, Year, Month, Weekday, Haversine, NumWords,
-                           NumCharacters]
+    expected_primitives = [
+        Age,
+        Day,
+        Year,
+        Month,
+        Weekday,
+        Haversine,
+        NumWords,
+        NumCharacters,
+    ]
     assert set(primitives) == set(expected_primitives)
 
 
@@ -140,115 +221,109 @@ def test_errors_no_primitive_in_file(bad_primitives_files_dir):
     assert str(excinfo.value) == error_text
 
 
-@pytest.mark.parametrize(
-    "window_length, gap",
-    [
-        (3, 2),
-        (3, 4),  # gap larger than window
-        (2, 0),  # gap explicitly set to 0
-    ],
-)
-def test_roll_series_with_gap(window_length, gap, rolling_series_pd):
-    rolling_max = _roll_series_with_gap(rolling_series_pd, window_length, gap=gap).max()
-    rolling_min = _roll_series_with_gap(rolling_series_pd, window_length, gap=gap).min()
+def test_check_input_types():
+    primitives = [Sum, Weekday, PercentTrue, Day, Std, NumericLag]
+    log_in_type_checks = set()
+    sem_tag_type_checks = set()
+    unique_input_types = set()
+    expected_log_in_check = {
+        "boolean_nullable",
+        "boolean",
+        "datetime",
+    }
+    expected_sem_tag_type_check = {"numeric", "time_index"}
+    expected_unique_input_types = {
+        "<ColumnSchema (Logical Type = BooleanNullable)>",
+        "<ColumnSchema (Semantic Tags = ['numeric'])>",
+        "<ColumnSchema (Logical Type = Boolean)>",
+        "<ColumnSchema (Logical Type = Datetime)>",
+        "<ColumnSchema (Semantic Tags = ['time_index'])>",
+    }
+    for prim in primitives:
+        input_types_flattened = prim.flatten_nested_input_types(prim.input_types)
+        _check_input_types(
+            input_types_flattened,
+            log_in_type_checks,
+            sem_tag_type_checks,
+            unique_input_types,
+        )
 
-    assert len(rolling_max) == len(rolling_series_pd)
-    assert len(rolling_min) == len(rolling_series_pd)
-
-    for i in range(len(rolling_series_pd)):
-        start_idx = i - gap - window_length + 1
-        end_idx = i - gap
-
-        # If start and end are negative, they're entirely before
-        if start_idx < 0 and end_idx < 0:
-            assert pd.isnull(rolling_max.iloc[i])
-            assert pd.isnull(rolling_min.iloc[i])
-            continue
-
-        if start_idx < 0:
-            start_idx = 0
-
-        # Because the row values are a range from 0 to 20, the rolling min will be the start index
-        # and the rolling max will be the end idx
-        assert rolling_min.iloc[i] == start_idx
-        assert rolling_max.iloc[i] == end_idx
+    assert log_in_type_checks == expected_log_in_check
+    assert sem_tag_type_checks == expected_sem_tag_type_check
+    assert unique_input_types == expected_unique_input_types
 
 
-def test_roll_series_with_no_gap(rolling_series_pd):
-    window_length = 3
-    gap = 0
-    actual_rolling = _roll_series_with_gap(rolling_series_pd, window_length, gap=gap).mean()
-    expected_rolling = rolling_series_pd.rolling(window_length, min_periods=1).mean()
-
-    pd.testing.assert_series_equal(actual_rolling, expected_rolling)
-
-
-@pytest.mark.parametrize(
-    "window_length, gap",
-    [
-        (6, 2),
-        (6, 0)  # No gap - changes early values
+def test_get_summary_primitives():
+    primitives = [
+        Sum,
+        Weekday,
+        PercentTrue,
+        Day,
+        Std,
+        NumericLag,
+        AddNumericScalar,
+        IsFreeEmailDomain,
+        NMostCommon,
     ]
-)
-def test_roll_series_with_gap_early_values(window_length, gap, rolling_series_pd):
-    # Default min periods is 1 - will include all
-    default_partial_values = _roll_series_with_gap(rolling_series_pd,
-                                                   window_length,
-                                                   gap=gap).count()
-    num_empty_aggregates = len(default_partial_values.loc[default_partial_values == 0])
-    num_partial_aggregates = len((default_partial_values
-                                  .loc[default_partial_values != 0])
-                                 .loc[default_partial_values < window_length])
-    assert num_empty_aggregates == gap
-    assert num_partial_aggregates == window_length - 1
+    primitives_summary = _get_summary_primitives(primitives)
+    expected_unique_input_types = 7
+    expected_unique_output_types = 6
+    expected_uses_multi_input = 2
+    expected_uses_multi_output = 1
+    expected_uses_external_data = 1
+    expected_controllable = 3
+    expected_datetime_inputs = 2
+    expected_bool = 1
+    expected_bool_nullable = 1
+    expected_time_index_tag = 1
 
-    # Make min periods the size of the window
-    no_partial_values = _roll_series_with_gap(rolling_series_pd,
-                                              window_length,
-                                              gap=gap,
-                                              min_periods=window_length).count()
-    num_null_aggregates = len(no_partial_values.loc[pd.isna(no_partial_values)])
-    num_partial_aggregates = len(no_partial_values.loc[no_partial_values < window_length])
+    assert (
+        primitives_summary["general_metrics"]["unique_input_types"]
+        == expected_unique_input_types
+    )
+    assert (
+        primitives_summary["general_metrics"]["unique_output_types"]
+        == expected_unique_output_types
+    )
+    assert (
+        primitives_summary["general_metrics"]["uses_multi_input"]
+        == expected_uses_multi_input
+    )
+    assert (
+        primitives_summary["general_metrics"]["uses_multi_output"]
+        == expected_uses_multi_output
+    )
+    assert (
+        primitives_summary["general_metrics"]["uses_external_data"]
+        == expected_uses_external_data
+    )
+    assert (
+        primitives_summary["general_metrics"]["are_controllable"]
+        == expected_controllable
+    )
+    assert (
+        primitives_summary["semantic_tag_metrics"]["time_index"]
+        == expected_time_index_tag
+    )
+    assert (
+        primitives_summary["logical_type_input_metrics"]["datetime"]
+        == expected_datetime_inputs
+    )
+    assert primitives_summary["logical_type_input_metrics"]["boolean"] == expected_bool
+    assert (
+        primitives_summary["logical_type_input_metrics"]["boolean_nullable"]
+        == expected_bool_nullable
+    )
 
-    # because we shift, gap is included as nan values in the series.
-    # Count treats nans in a window as values that don't get counted,
-    # so the gap rows get included in the count for whether a window has "min periods".
-    # This is different than max, for example, which does not count nans in a window as values towards "min periods"
-    assert num_null_aggregates == window_length - 1
-    assert num_partial_aggregates == gap
 
+def test_summarize_primitives():
+    df = summarize_primitives()
+    trans_prims = get_transform_primitives()
+    agg_prims = get_aggregation_primitives()
+    tot_trans = len(trans_prims)
+    tot_agg = len(agg_prims)
+    tot_prims = tot_trans + tot_agg
 
-def test_roll_series_with_gap_nullable_types(rolling_series_pd):
-    window_length = 3
-    gap = 2
-    # Because we're inserting nans, confirm that nullability of the dtype doesn't have an impact on the results
-    nullable_series = rolling_series_pd.astype('Int64')
-    non_nullable_series = rolling_series_pd.astype('int64')
-
-    nullable_rolling_max = _roll_series_with_gap(nullable_series, window_length, gap=gap).max()
-    non_nullable_rolling_max = _roll_series_with_gap(non_nullable_series, window_length, gap=gap).max()
-
-    pd.testing.assert_series_equal(nullable_rolling_max, non_nullable_rolling_max)
-
-
-def test_roll_series_with_gap_nullable_types_with_nans(rolling_series_pd):
-    window_length = 3
-    gap = 2
-    nullable_floats = rolling_series_pd.astype('float64').replace({1: np.nan, 3: np.nan})
-    nullable_ints = nullable_floats.astype('Int64')
-
-    nullable_ints_rolling_max = _roll_series_with_gap(nullable_ints, window_length, gap=gap).max()
-    nullable_floats_rolling_max = _roll_series_with_gap(nullable_floats, window_length, gap=gap).max()
-
-    pd.testing.assert_series_equal(nullable_ints_rolling_max, nullable_floats_rolling_max)
-
-    expected_early_values = ([np.nan, np.nan, 0, 0, 2, 2, 4] +
-                             list(range(7 - gap, len(rolling_series_pd) - gap)))
-    for i in range(len(rolling_series_pd)):
-        actual = nullable_floats_rolling_max.iloc[i]
-        expected = expected_early_values[i]
-
-        if pd.isnull(actual):
-            assert pd.isnull(expected)
-        else:
-            assert actual == expected
+    assert df["Count"].iloc[0] == tot_prims
+    assert df["Count"].iloc[1] == tot_agg
+    assert df["Count"].iloc[2] == tot_trans

@@ -20,6 +20,7 @@ featuretools/tests/integration_data/stores.gzip
 **/dask-worker-space/*
 *.dirlock
 *.~lock*
+unpacked_sdist/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -133,3 +134,8 @@ ENV/
 
 #IDE
 .vscode
+.devcontainer
+
+*.stats
+Dockerfile.arm
+.dockerignore

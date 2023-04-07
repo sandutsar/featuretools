@@ -6,17 +6,519 @@ Release Notes
 Future Release
 ==============
     * Enhancements
+        * Add ``MaxCount``, ``MedianCount``, ``MaxMinDelta``, ``NUniqueDays``, ``NMostCommonFrequency``,
+            ``NUniqueDaysOfCalendarYear``, ``NUniqueDaysOfMonth``, ``NUniqueMonths``,
+            ``NUniqueWeeks``, ``IsFirstWeekOfMonth`` (:pr:`2533`)
     * Fixes
     * Changes
+        * Pinned pandas to 2.0.0 (:pr:`2533`)
+    * Documentation Changes
+    * Testing Changes
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`
+
+v1.24.0 Mar 28, 2023
+====================
+    * Enhancements
+        * Add ``AverageCountPerUnique``, ``CountryCodeToContinent``, ``FileExtension``, ``FirstLastTimeDelta``, ``SavgolFilter``,
+            ``CumulativeTimeSinceLastFalse``, ``CumulativeTimeSinceLastTrue``, ``PercentChange``, ``PercentUnique`` (:pr:`2485`)
+        * Add ``FullNameToFirstName``, ``FullNameToLastName``, ``FullNameToTitle``, ``AutoCorrelation``,
+            ``Correlation``, ``DateFirstEvent`` (:pr:`2507`)
+        * Add ``Kurtosis``, ``MinCount``, ``NumFalseSinceLastTrue``, ``NumPeaks``,
+            ``NumTrueSinceLastFalse``, ``NumZeroCrossings`` (:pr:`2514`)
+    * Fixes
+        * Pin github-action-check-linked-issues to 1.4.5 (:pr:`2497`)
+        * Support Woodwork's update numeric inference (integers as strings) (:pr:`2505`)
+        * Update ``SubtractNumeric`` Primitive with commutative class property (:pr:`2527`)
+    * Changes
+        * Separate Makefile command for core requirements, test requirements and dev requirements (:pr:`2518`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`dvreed77`, :user:`gsheni`, :user:`ozzieD`
+
+v1.23.0 Feb 15, 2023
+====================
+    * Changes
+        * Change ``TotalWordLength`` and ``UpperCaseWordCount`` to return ``IntegerNullable`` (:pr:`2474`)
+    * Testing Changes
+       * Add GitHub Actions cache to speed up workflows (:pr:`2475`)
+       * Fix latest dependency checker install command (:pr:`2476`)
+       * Add pull request check for linked issues to CI workflow (:pr:`2477`, :pr:`2481`)
+       * Remove make package from lint workflow (:pr:`2479`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`dreed`, :user:`gsheni`, :user:`sbadithe`
+
+v1.22.0 Jan 31, 2023
+====================
+    * Enhancements
+        * Add ``AbsoluteDiff``, ``SameAsPrevious``, ``Variance``, ``Season``, ``UpperCaseWordCount`` transform primitives (:pr:`2460`)
+    * Fixes
+        * Fix bug with consecutive spaces in ``NumWords`` (:pr:`2459`)
+        * Fix for compatibility with ``holidays`` v0.19.0 (:pr:`2471`)
+    * Changes
+        * Specify black and ruff config arguments in pre-commit-config (:pr:`2456`)
+        * ``NumCharacters`` returns null given null input (:pr:`2463`)
+    * Documentation Changes
+        * Update ``release.md`` with instructions for launching Looking Glass performance test runs (:pr:`2461`)
+        * Pin ``jupyter-client==7.4.9`` to fix broken documentation build (:pr:`2463`)
+        * Unpin jupyter-client documentation requirement (:pr:`2468`)
+    * Testing Changes
+        * Add test suites for ``NumWords`` and ``NumCharacters`` primitives (:pr:`2459`, :pr:`2463`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`rwedge`, :user:`sbadithe`, :user:`thehomebrewnerd`
+
+v1.21.0 Jan 18, 2023
+====================
+    * Enhancements
+        * Add `get_recommended_primitives` function to featuretools (:pr:`2398`)
+    * Changes
+        * Update build_docs workflow to only run for Python 3.8 and Python 3.10 (:pr:`2447`)
+    * Documentation Changes
+        * Minor fix to release notes (:pr:`2444`)
+    * Testing Changes
+        * Add test that checks for Natural Language primitives timing out against edge-case input (:pr:`2429`)
+        * Fix test compatibility with composeml 0.10 (:pr:`2439`)
+        * Minimum dependency unit test jobs do not abort if one job fails (:pr:`2437`)
+        * Run Looking Glass performance tests on merge to main (:pr:`2440`, :pr:`2441`)
+        * Add ruff for linting and replace isort/flake8 (:pr:`2448`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`ozzieD`, :user:`rwedge`, :user:`sbadithe`, :user:`thehomebrewnerd`
+
+v1.20.0 Jan 5, 2023
+===================
+    * Enhancements
+        * Add ``TimeSinceLastFalse``, ``TimeSinceLastMax``, ``TimeSinceLastMin``, and ``TimeSinceLastTrue`` primitives (:pr:`2418`)
+        * Add ``MaxConsecutiveFalse``, ``MaxConsecutiveNegatives``, ``MaxConsecutivePositives``, ``MaxConsecutiveTrue``, ``MaxConsecutiveZeros``, ``NumConsecutiveGreaterMean``, ``NumConsecutiveLessMean`` (:pr:`2420`)
+    * Fixes
+        * Fix typo in ``_handle_binary_comparison`` function name and update ``set_feature_names`` docstring (:pr:`2388`)
+        * Only allow Datetime time index as input to ``RateOfChange`` primitive (:pr:`2408`)
+        * Prevent catastrophic backtracking in regex for ``NumberOfWordsInQuotes`` (:pr:`2413`)
+        * Fix to eliminate fragmentation ``PerformanceWarning`` in ``feature_set_calculator.py`` (:pr:`2424`)
+        * Fix serialization of ``NumberOfCommonWords`` feature with custom word_set (:pr:`2432`)
+        * Improve edge case handling in NaturalLanguage primitives by standardizing delimiter regex (:pr:`2423`)
+        * Remove support for ``Datetime`` and ``Ordinal`` inputs in several primitives to prevent creation of Features that cannot be calculated (:pr:`2434`)
+    * Changes
+        * Refactor ``_all_direct_and_same_path`` by deleting call to ``_features_have_same_path`` (:pr:`2400`)
+        * Refactor ``_build_transform_features`` by iterating over ``input_features`` once (:pr:`2400`)
+        * Iterate only once over ``ignore_columns`` in ``DeepFeatureSynthesis`` init (:pr:`2397`)
+        * Resolve empty Pandas series warnings (:pr:`2403`)
+        * Initialize Woodwork with ``init_with_partial_schama`` instead of ``init`` in ``EntitySet.add_last_time_indexes`` (:pr:`2409`)
+        * Updates for compatibility with numpy 1.24.0 (:pr:`2414`)
+        * The ``delimiter_regex`` parameter for ``TotalWordLength`` has been renamed to ``do_not_count`` (:pr:`2423`)
+    * Documentation Changes
+        *  Remove unused sections from 1.19.0 notes (:pr:`2396`)
+
+   Thanks to the following people for contributing to this release:
+   :user:`gsheni`, :user:`rwedge`, :user:`sbadithe`, :user:`thehomebrewnerd`
+
+
+Breaking Changes
+++++++++++++++++
+* The ``delimiter_regex`` parameter for ``TotalWordLength`` has been renamed to ``do_not_count``.
+  Old saved features that had a non-default value for the parameter will no longer load.
+* Support for ``Datetime`` and ``Ordinal`` inputs has been removed from the ``LessThanScalar``,
+  ``GreaterThanScalar``, ``LessThanEqualToScalar`` and ``GreaterThanEqualToScalar`` primitives.
+
+v1.19.0 Dec 9, 2022
+===================
+    * Enhancements
+        * Add ``OneDigitPostalCode`` and ``TwoDigitPostalCode`` primitives (:pr:`2365`)
+        * Add ``ExpandingCount``, ``ExpandingMin``, ``ExpandingMean``, ``ExpandingMax``, ``ExpandingSTD``, and ``ExpandingTrend`` primitives (:pr:`2343`)
+    * Fixes
+        * Fix DeepFeatureSynthesis to consider the ``base_of_exclude`` family of attributes when creating transform features(:pr:`2380`)
+        * Fix bug with negative version numbers in ``test_version`` (:pr:`2389`)
+        * Fix bug in ``MultiplyNumericBoolean`` primitive that can cause an error with certain input dtype combinations (:pr:`2393`)
+    * Testing Changes
+        * Fix version comparison in ``test_holiday_out_of_range`` (:pr:`2382`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`sbadithe`, :user:`thehomebrewnerd`
+
+v1.18.0 Nov 15, 2022
+====================
+    * Enhancements
+        * Add ``RollingOutlierCount`` primitive (:pr:`2129`)
+        * Add ``RateOfChange`` primitive (:pr:`2359`)
+    * Fixes
+        * Sets ``uses_full_dataframe`` for ``Rolling*`` and ``Exponential*`` primitives (:pr:`2354`)
+        * Updates for compatibility with upcoming Woodwork release 0.21.0 (:pr:`2363`)
+        * Updates demo dataset location to use new links (:pr:`2366`)
+        * Fix ``test_holiday_out_of_range`` after ``holidays`` release 0.17 (:pr:`2373`)
+    * Changes
+        * Remove click and CLI functions (``list-primitives``, ``info``) (:pr:`2353`, :pr:`2358`)
+    * Documentation Changes
+        * Build docs in parallel with Sphinx (:pr:`2351`)
+        * Use non-editable install to allow local docs build (:pr:`2367`)
+        * Remove primitives.featurelabs.com website from documentation (:pr:`2369`)
+    * Testing Changes
+        * Replace use of pytest's tmpdir fixture with tmp_path (:pr:`2344`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`rwedge`, :user:`sbadithe`, :user:`tamargrey`, :user:`thehomebrewnerd`
+
+Breaking Changes
+++++++++++++++++
+* The featuretools CLI has been completely removed.
+
+v1.17.0 Oct 31, 2022
+====================
+    * Enhancements
+        * Add featuretools-sklearn-transformer as an extra installation option (:pr:`2335`)
+        * Add CountAboveMean, CountBelowMean, CountGreaterThan, CountInsideNthSTD, CountInsideRange, CountLessThan, CountOutsideNthSTD, CountOutsideRange (:pr:`2336`)
+    * Changes
+        * Restructure primitives directory to use individual primitives files (:pr:`2331`)
+        * Restrict 2022.10.1 for dask and distributed (:pr:`2347`)
+    * Documentation Changes
+        * Add Featuretools-SQL to Install page on documentation (:pr:`2337`)
+        * Fixes broken link in Featuretools documentation (:pr:`2339`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`rwedge`, :user:`sbadithe`, :user:`thehomebrewnerd`
+
+v1.16.0 Oct 24, 2022
+====================
+    * Enhancements
+        * Add ExponentialWeighted primitives and DateToTimeZone primitive (:pr:`2318`)
+        * Add 14 natural language primitives from ``nlp_primitives`` library (:pr:`2328`)
+    * Documentation Changes
+        * Fix typos in ``aggregation_primitive_base.py`` and ``features_deserializer.py`` (:pr:`2317`) (:pr:`2324`)
+        * Update SQL integration documentation to reflect Snowflake compatibility (:pr:`2313`)
+    * Testing Changes
+        * Add Windows install test (:pr:`2330`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`sbadithe`, :user:`thehomebrewnerd`
+
+v1.15.0 Oct 6, 2022
+===================
+    * Enhancements
+        * Add ``series_library`` attribute to ``EntitySet`` dictionary (:pr:`2257`)
+        * Leverage ``Library`` Enum inheriting from ``str`` (:pr:`2275`)
+    * Changes
+        * Change default gap for Rolling* primitives from 0 to 1 to prevent accidental leakage (:pr:`2282`)
+        * Updates for pandas 1.5.0 compatibility (:pr:`2290`, :pr:`2291`, :pr:`2308`)
+        * Exclude documentation files from release workflow (:pr:`2295`)
+        * Bump requirements for optional pyspark dependency (:pr:`2299`)
+        * Bump ``scipy`` and ``woodwork[spark]`` dependencies (:pr:`2306`)
+    * Documentation Changes
+        * Add documentation describing how to use ``featuretools_sql`` with ``featuretools`` (:pr:`2262`)
+        * Remove ``featuretools_sql`` as a docs requirement (:pr:`2302`)
+        * Fix typo in ``DiffDatetime`` doctest (:pr:`2314`)
+        * Fix typo in ``EntitySet`` documentation (:pr:`2315`)
+    * Testing Changes
+        * Remove graphviz version restrictions in Windows CI tests (:pr:`2285`)
+        * Run CI tests with ``pytest -n auto`` (:pr:`2298`, :pr:`2310`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`rwedge`, :user:`sbadithe`, :user:`thehomebrewnerd`
+
+Breaking Changes
+++++++++++++++++
+* The ``EntitySet`` schema has been updated to include a ``series_library`` attribute
+* The default behavior of the ``Rolling*`` primitives has changed in this release. If this primitive was used without
+  defining the ``gap`` value, the feature values returned with this release will be different than feature values from
+  prior releases.
+
+v1.14.0 Sep 1, 2022
+===================
+    * Enhancements
+        * Replace ``NumericLag`` with ``Lag`` primitive (:pr:`2252`)
+        * Refactor build_features to speed up long running DFS calls by 50% (:pr:`2224`)
+    * Fixes
+        * Fix compatibility issues with holidays 0.15 (:pr:`2254`)
+    * Changes
+        * Update release notes to make clear conda release portion (:pr:`2249`)
+        * Use pyproject.toml only (move away from setup.cfg) (:pr:`2260`, :pr:`2263`, :pr:`2265`)
+        * Add entry point instructions for pyproject.toml project (:pr:`2272`)
+    * Documentation Changes
+        * Fix to remove warning from Using Spark EntitySets Guide (:pr:`2258`)
+    * Testing Changes
+        * Add tests/profiling/dfs_profile.py (:pr:`2224`)
+        * Add workflow to test featuretools without test dependencies (:pr:`2274`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`cp2boston`, :user:`gsheni`, :user:`ozzieD`, :user:`stefaniesmith`, :user:`thehomebrewnerd`
+
+v1.13.0 Aug 18, 2022
+====================
+    * Fixes
+        * Allow boolean columns to be included in remove_highly_correlated_features (:pr:`2231`)
+    * Changes
+        * Refactor schema version checking to use `packaging` method (:pr:`2230`)
+        * Extract duplicated logic for Rolling primitives into a general utility function (:pr:`2218`)
+        * Set pandas version to >=1.4.0 (:pr:`2246`)
+        * Remove workaround in `roll_series_with_gap` caused by pandas version < 1.4.0 (:pr:`2246`)
+    * Documentation Changes
+        * Add line breaks between sections of IsFederalHoliday primitive docstring (:pr:`2235`)
+    * Testing Changes
+        * Update create feedstock PR forked repo to use (:pr:`2223`, :pr:`2237`)
+        * Update development requirements and use latest for documentation (:pr:`2225`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`ozzieD`, :user:`sbadithe`, :user:`tamargrey`
+
+v1.12.1 Aug 4, 2022
+===================
+    * Fixes
+        * Update ``Trend`` and ``RollingTrend`` primitives to work with ``IntegerNullable`` inputs (:pr:`2204`)
+        * ``camel_and_title_to_snake`` handles snake case strings with numbers (:pr:`2220`)
+        * Change ``_get_description`` to split on blank lines to avoid truncating primitive descriptions (:pr:`2219`)
+    * Documentation Changes
+        * Add instructions to add new users to featuretools feedstock (:pr:`2215`)
+    * Testing Changes
+        * Add create feedstock PR workflow (:pr:`2181`)
+        * Add performance tests for python 3.9 and 3.10 (:pr:`2198`, :pr:`2208`)
+        * Add test to ensure primitive docstrings use standardized verbs (:pr:`2200`)
+        * Configure codecov to avoid premature PR comments (:pr:`2209`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`rwedge`, :user:`sbadithe`, :user:`tamargrey`, :user:`thehomebrewnerd`
+
+v1.12.0 Jul 19, 2022
+====================
+    .. warning::
+        This release of Featuretools will not support Python 3.7
+
+    * Enhancements
+        * Add ``IsWorkingHours`` and ``IsLunchTime`` transform primitives (:pr:`2130`)
+        * Add periods parameter to ``Diff`` and add ``DiffDatetime`` primitive (:pr:`2155`)
+        * Add ``RollingTrend`` primitive (:pr:`2170`)
+    * Fixes
+        * Resolves Woodwork integration test failure and removes Python version check for codecov (:pr:`2182`)
+    * Changes
+        * Drop Python 3.7 support (:pr:`2169`, :pr:`2186`)
+        * Add pre-commit hooks for linting (:pr:`2177`)
+    * Documentation Changes
+        * Augment single table entry in DFS to include information about passing in a dictionary for `dataframes` argument (:pr:`2160`)
+    * Testing Changes
+        * Standardize imports across test files to simplify accessing featuretools functions (:pr:`2166`)
+        * Split spark tests into multiple CI jobs to speed up runtime (:pr:`2183`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`dvreed77`, :user:`gsheni`, :user:`ozzieD`, :user:`rwedge`, :user:`sbadithe`
+
+v1.11.1 Jul 5, 2022
+===================
+    * Fixes
+        * Remove 24th hour from PartOfDay primitive and add 0th hour (:pr:`2167`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`tamargrey`
+
+v1.11.0 Jun 30, 2022
+====================
+    * Enhancements
+        * Add datetime and string types as valid arguments to dfs ``cutoff_time`` (:pr:`2147`)
+        * Add ``PartOfDay`` transform primitive (:pr:`2128`)
+        * Add ``IsYearEnd``, ``IsYearStart`` transform primitives (:pr:`2124`)
+        * Add ``Feature.set_feature_names`` method to directly set output column names for multi-output features (:pr:`2142`)
+        * Include np.nan testing for ``DayOfYear`` and ``DaysInMonth`` primitives (:pr:`2146`)
+        * Allow dfs kwargs to be passed into ``get_valid_primitives`` (:pr:`2157`)
+    * Changes
+        * Improve serialization and deserialization to reduce storage of duplicate primitive information (:pr:`2136`, :pr:`2127`, :pr:`2144`)
+        * Sort core requirements and test requirements in setup cfg (:pr:`2152`)
+    * Testing Changes
+        * Fix pandas warning and reduce dask .apply warnings (:pr:`2145`)
+        * Pin graphviz version used in windows tests (:pr:`2159`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`ozzieD`, :user:`rwedge`, :user:`sbadithe`, :user:`tamargrey`, :user:`thehomebrewnerd`
+
+v1.10.0 Jun 23, 2022
+====================
+    * Enhancements
+        * Add ``DayOfYear``, ``DaysInMonth``, ``Quarter``, ``IsLeapYear``, ``IsQuarterEnd``, ``IsQuarterStart`` transform primitives (:pr:`2110`, :pr:`2117`)
+        * Add ``IsMonthEnd``, ``IsMonthStart`` transform primitives (:pr:`2121`)
+        * Move ``Quarter`` test cases (:pr:`2123`)
+        * Add ``summarize_primitives`` function for getting metrics about available primitives (:pr:`2099`)
+    * Changes
+        * Changes for compatibility with numpy 1.23.0 (:pr:`2135`, :pr:`2137`)
+    * Documentation Changes
+        * Update contributing.md to add pandoc (:pr:`2103`, :pr:`2104`)
+        * Update NLP primitives section of API reference (:pr:`2109`)
+        * Fixing release notes formatting (:pr:`2139`)
+    * Testing Changes
+        * Latest dependency checker installs spark dependencies (:pr:`2112`)
+        * Fix test failures with pyspark v3.3.0 (:pr:`2114`, :pr:`2120`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`ozzieD`, :user:`rwedge`, :user:`sbadithe`, :user:`thehomebrewnerd`
+
+v1.9.2 Jun 10, 2022
+===================
+    * Fixes
+        * Add feature origin information to all multi-output feature columns (:pr:`2102`)
+    * Documentation Changes
+        * Update contributing.md to add pandoc (:pr:`2103`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`thehomebrewnerd`
+
+v1.9.1 May 27, 2022
+===================
+    * Enhancements
+        * Update ``DateToHoliday`` and ``DistanceToHoliday`` primitives to work with timezone-aware inputs (:pr:`2056`)
+    * Changes
+        * Delete setup.py, MANIFEST.in and move configuration to pyproject.toml (:pr:`2046`)
+    * Documentation Changes
+        * Update slack invite link to new (:pr:`2044`)
+        * Add slack and stackoverflow icon to footer (:pr:`2087`)
+        * Update dead links in docs and docstrings (:pr:`2092`, :pr:`2095`)
+    * Testing Changes
+        * Skip test for ``normalize_dataframe`` due to different error coming from Woodwork in 0.16.3 (:pr:`2052`)
+        * Fix Woodwork install in test with Woodwork main branch (:pr:`2055`)
+        * Use codecov action v3 (:pr:`2039`)
+        * Add workflow to kickoff EvalML unit tests with Featuretools main (:pr:`2072`)
+        * Rename yml to yaml for GitHub Actions workflows (:pr:`2073`, :pr:`2077`)
+        * Update Dask test fixtures to prevent flaky behavior (:pr:`2079`)
+        * Update Makefile with better pkg command (:pr:`2081`)
+        * Add scheduled workflow that checks for broken links in documentation (:pr:`2084`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`rwedge`, :user:`thehomebrewnerd`
+
+v1.9.0 Apr 27, 2022
+===================
+    * Enhancements
+        * Improve ``UnusedPrimitiveWarning`` with additional information (:pr:`2003`)
+        * Update DFS primitive matching to use all inputs defined in primitive ``input_types`` (:pr:`2019`)
+        * Add ``MultiplyNumericBoolean`` primitive (:pr:`2035`)
+    * Fixes
+        * Fix issue with Ordinal inputs to binary comparison primitives (:pr:`2024`, :pr:`2025`)
+    * Changes
+        * Updated autonormalize version requirement (:pr:`2002`)
+        * Remove extra NaN checking in LatLong primitives (:pr:`1924`)
+        * Normalize LatLong NaN values during EntitySet creation (:pr:`1924`)
+        * Pass primitive dictionaries into ``check_primitive`` to avoid repetitive calls (:pr:`2016`)
+        * Remove ``Boolean`` and ``BooleanNullable`` from ``MultiplyNumeric`` primitive inputs (:pr:`2022`)
+        * Update serialization for compatibility with Woodwork version 0.16.1 (:pr:`2030`)
+    * Documentation Changes
+        * Update README text to Alteryx (:pr:`2010`, :pr:`2015`)
+    * Testing Changes
+        * Update unit tests with Woodwork main branch workflow name (:pr:`2033`)
+        * Add slack alert for failing unit tests with Woodwork main branch (:pr:`2040`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`dvreed77`, :user:`gsheni`, :user:`ozzieD`, :user:`rwedge`, :user:`thehomebrewnerd`
+
+Note
+++++
+* The update to the DFS algorithm in this release may cause the number of features returned
+  by ``ft.dfs`` to increase in some cases.
+
+v1.8.0 Mar 31, 2022
+===================
+    * Changes
+        * Removed ``make_trans_primitive`` and ``make_agg_primitive`` utility functions (:pr:`1970`)
+    * Documentation Changes
+        * Update project urls in setup cfg to include Twitter and Slack (:pr:`1981`)
+        * Update nbconvert to version 6.4.5 to fix docs build issue (:pr:`1984`)
+        * Update ReadMe to have centered badges and add docs badge (:pr:`1993`)
+        * Add M1 installation instructions to docs and contributing (:pr:`1997`)
+    * Testing Changes
+        * Updated scheduled workflows to only run on Alteryx owned repos (:pr:`1973`)
+        * Updated minimum dependency checker to use new version with write file support (:pr:`1975`, :pr:`1976`)
+        * Add black linting package and remove autopep8 (:pr:`1978`)
+        * Update tests for compatibility with Woodwork version 0.15.0 (:pr:`1984`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`gsheni`, :user:`thehomebrewnerd`
+
+Breaking Changes
+++++++++++++++++
+* The utility functions ``make_trans_primitive`` and ``make_agg_primitive`` have been removed. To create custom
+  primitives, define the primitive class directly.
+
+v1.7.0 Mar 16, 2022
+===================
+    * Enhancements
+        * Add support for Python 3.10 (:pr:`1940`)
+        * Added the SquareRoot, NaturalLogarithm, Sine, Cosine and Tangent primitives (:pr:`1948`)
+    * Fixes
+        * Updated the conda install commands to specify the channel (:pr:`1917`)
+    * Changes
+        * Update error message when DFS returns an empty list of features (:pr:`1919`)
+        * Remove ``list_variable_types`` and related directories (:pr:`1929`)
+        * Transition to use pyproject.toml and setup.cfg (moving away from setup.py) (:pr:`1941`, :pr:`1950`, :pr:`1952`, :pr:`1954`, :pr:`1957`, :pr:`1964`)
+        * Replace Koalas with pandas API on Spark (:pr:`1949`)
+    * Documentation Changes
+        * Add time series guide (:pr:`1896`)
+        * Update minimum nlp_primitives requirement for docs (:pr:`1925`)
+        * Add GitHub URL for PyPi (:pr:`1928`)
+        * Add backport release support (:pr:`1932`)
+        * Update instructions in ``release.md`` (:pr:`1963`)
+    * Testing Changes
+        * Update test cases to cover __main__.py file (:pr:`1927`)
+        * Upgrade moto requirement (:pr:`1929`, :pr:`1938`)
+        * Add Python 3.9 linting, install complete, and docs build CI tests (:pr:`1934`)
+        * Add CI workflow to test with latest woodwork main branch (:pr:`1936`)
+        * Add lower bound for wheel for minimum dependency checker and limit lint CI tests to Python 3.10 (:pr:`1945`)
+        * Fix non-deterministic test in ``test_es.py`` (:pr:`1961`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`andriyor`, :user:`gsheni`, :user:`jeff-hernandez`, :user:`kushal-gopal`, :user:`mingdavidqi`, :user:`rwedge`, :user:`tamargrey`, :user:`thehomebrewnerd`, :user:`tvdboom`
+
+Breaking Changes
+++++++++++++++++
+* The deprecated utility ``list_variable_types`` has been removed from Featuretools.
+
+v1.6.0 Feb 17, 2022
+===================
+    * Enhancements
+        * Add ``IsFederalHoliday`` transform primitive (:pr:`1912`)
+    * Fixes
+        * Fix to catch new ``NotImplementedError`` raised by ``holidays`` library for unknown country (:pr:`1907`)
+    * Changes
+        * Remove outdated pandas workaround code (:pr:`1906`)
+    * Documentation Changes
+        * Add in-line tabs and copy-paste functionality to docs (:pr:`1905`)
+    * Testing Changes
+        * Fix URL deserialization file (:pr:`1909`)
+
+    Thanks to the following people for contributing to this release:
+    :user:`jeff-hernandez`, :user:`rwedge`, :user:`thehomebrewnerd`
+
+
+v1.5.0 Feb 14, 2022
+===================
+    .. warning::
+        Featuretools may not support Python 3.7 in next non-bugfix release.
+
+    * Enhancements
+        * Add ability to use offset alias strings as inputs to rolling primitives (:pr:`1809`)
+        * Update to add support for pandas version 1.4.0 (:pr:`1881`, :pr:`1895`)
+    * Fixes
+        * Fix ``featuretools_primitives`` entry point (:pr:`1891`)
+    * Changes
+        * Allow only snake camel and title case for primitives (:pr:`1854`)
         * Add autonormalize as an add-on library (:pr:`1840`)
         * Add DateToHoliday Transform Primitive (:pr:`1848`)
+        * Add DistanceToHoliday Transform Primitive (:pr:`1853`)
+        * Temporarily restrict pandas and koalas max versions (:pr:`1863`)
+        * Add ``__setitem__`` method to overload ``add_dataframe`` method on EntitySet (:pr:`1862`)
+        * Add support for woodwork 0.12.0 (:pr:`1872`, :pr:`1897`)
+        * Split Datetime and LatLong primitives into separate files (:pr:`1861`)
+        * Null values will not be included in index of normalized dataframe (:pr:`1897`)
     * Documentation Changes
+        * Bump ipython version (:pr:`1857`)
+        * Update README.md with Alteryx link (:pr:`1886`)
     * Testing Changes
         * Add check for package conflicts with install workflow (:pr:`1843`)
         * Change auto approve workflow to use assignee (:pr:`1843`)
+        * Update auto approve workflow to delete branch and change on trigger (:pr:`1852`)
+        * Upgrade tests to use compose version 0.8.0 (:pr:`1856`)
+        * Updated deep feature synthesis and feature serialization tests to use new primitive files (:pr:`1861`)
 
     Thanks to the following people for contributing to this release:
-    :user:`gsheni`, :user:`tuethan1999`, :user:`dvreed77`
+    :user:`dvreed77`, :user:`gsheni`, :user:`jacobboney`, :user:`jeff-hernandez`, :user:`rwedge`, :user:`tamargrey`, :user:`thehomebrewnerd`, :user:`tuethan1999`
+
+Breaking Changes
+++++++++++++++++
+* When using ``normalize_dataframe`` to create a new dataframe, the new dataframe's index will not include a null value.
 
 v1.4.0 Jan 10, 2022
 ===================
@@ -40,7 +542,6 @@ v1.4.0 Jan 10, 2022
 
     Thanks to the following people for contributing to this release:
     :user:`davesque`, :user:`gsheni`, :user:`rwedge`, :user:`thehomebrewnerd`
-    
 
 v1.3.0 Dec 2, 2021
 ==================
@@ -52,7 +553,7 @@ v1.3.0 Dec 2, 2021
         * Add Docker install instructions and documentation on the install page. (:pr:`1785`)
         * Update install page on documentation with correct python version (:pr:`1784`)
         * Fix formatting in Improving Computational Performance guide (:pr:`1786`)
-  
+
     Thanks to the following people for contributing to this release:
     :user:`gsheni`, :user:`HenryRocha`, :user:`tamargrey` :user:`thehomebrewnerd`
 
@@ -90,7 +591,7 @@ v1.1.0 Nov 2, 2021
     :user:`bchen1116`, :user:`gsheni`, :user:`HenryRocha`, :user:`jeff-hernandez`, :user:`ridicolos`, :user:`rwedge`
 
 v1.0.0 Oct 12, 2021
-====================
+===================
     * Enhancements
         * Add support for creating EntitySets from Woodwork DataTables (:pr:`1277`)
         * Add ``EntitySet.__deepcopy__`` that retains Woodwork typing information (:pr:`1465`)
@@ -216,7 +717,7 @@ Breaking Changes
   Woodwork has not been initialized on the DataFrame. When adding a dataframe that already has Woodwork
   initialized, if there is no index set, an error will be raised (:pr:`1405`).
 * Featuretools will no longer re-order columns in DataFrames so that the index column is the first column of the DataFrame (:pr:`1405`).
-* Type inference can now be performed on Dask and Koalas dataframes, though a warning will be issued 
+* Type inference can now be performed on Dask and Koalas dataframes, though a warning will be issued
   indicating that this may be computationally intensive (:pr:`1405`).
 * EntitySet.time_type is no longer stored as Variable objects. Instead, Woodwork typing is used, and a
   numeric time type will be indicated by the ``'numeric'`` semantic tag string, and a datetime time type
@@ -342,10 +843,10 @@ v0.26.2 Aug 17, 2021
         * Remove GA token from the layout html (:pr:`1622`)
     * Testing Changes
         * Add additional reviewers to minimum and latest dependency checkers (:pr:`1558`, :pr:`1562`, :pr:`1564`, :pr:`1567`)
-    
+
     Thanks to the following people for contributing to this release:
     :user:`gsheni`, :user:`simha104`
-    
+
 v0.26.1 Jul 23, 2021
 ====================
     * Fixes

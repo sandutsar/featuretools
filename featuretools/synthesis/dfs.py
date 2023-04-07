@@ -4,46 +4,45 @@ from featuretools.computational_backends import calculate_feature_matrix
 from featuretools.entityset import EntitySet
 from featuretools.exceptions import UnusedPrimitiveWarning
 from featuretools.synthesis.deep_feature_synthesis import DeepFeatureSynthesis
-from featuretools.synthesis.utils import (
-    _categorize_features,
-    get_unused_primitives
-)
+from featuretools.synthesis.utils import _categorize_features, get_unused_primitives
 from featuretools.utils import entry_point
 
 
-@entry_point('featuretools_dfs')
-def dfs(dataframes=None,
-        relationships=None,
-        entityset=None,
-        target_dataframe_name=None,
-        cutoff_time=None,
-        instance_ids=None,
-        agg_primitives=None,
-        trans_primitives=None,
-        groupby_trans_primitives=None,
-        allowed_paths=None,
-        max_depth=2,
-        ignore_dataframes=None,
-        ignore_columns=None,
-        primitive_options=None,
-        seed_features=None,
-        drop_contains=None,
-        drop_exact=None,
-        where_primitives=None,
-        max_features=-1,
-        cutoff_time_in_index=False,
-        save_progress=None,
-        features_only=False,
-        training_window=None,
-        approximate=None,
-        chunk_size=None,
-        n_jobs=1,
-        dask_kwargs=None,
-        verbose=False,
-        return_types=None,
-        progress_callback=None,
-        include_cutoff_time=True):
-    '''Calculates a feature matrix and features given a dictionary of dataframes
+@entry_point("featuretools_dfs")
+def dfs(
+    dataframes=None,
+    relationships=None,
+    entityset=None,
+    target_dataframe_name=None,
+    cutoff_time=None,
+    instance_ids=None,
+    agg_primitives=None,
+    trans_primitives=None,
+    groupby_trans_primitives=None,
+    allowed_paths=None,
+    max_depth=2,
+    ignore_dataframes=None,
+    ignore_columns=None,
+    primitive_options=None,
+    seed_features=None,
+    drop_contains=None,
+    drop_exact=None,
+    where_primitives=None,
+    max_features=-1,
+    cutoff_time_in_index=False,
+    save_progress=None,
+    features_only=False,
+    training_window=None,
+    approximate=None,
+    chunk_size=None,
+    n_jobs=1,
+    dask_kwargs=None,
+    verbose=False,
+    return_types=None,
+    progress_callback=None,
+    include_cutoff_time=True,
+):
+    """Calculates a feature matrix and features given a dictionary of dataframes
     and a list of relationships.
 
 
@@ -63,16 +62,16 @@ def dfs(dataframes=None,
 
         target_dataframe_name (str): Name of dataframe on which to make predictions.
 
-        cutoff_time (pd.DataFrame or Datetime): Specifies times at which to calculate
+        cutoff_time (pd.DataFrame or Datetime or str): Specifies times at which to calculate
             the features for each instance. The resulting feature matrix will use data
-            up to and including the cutoff_time. Can either be a DataFrame or a single
-            value. If a DataFrame is passed the instance ids for which to calculate features
-            must be in a column with the same name as the target dataframe index or a column
-            named `instance_id`. The cutoff time values in the DataFrame must be in a column with
-            the same name as the target dataframe time index or a column named `time`. If the
-            DataFrame has more than two columns, any additional columns will be added to the
-            resulting feature matrix. If a single value is passed, this value will be used for
-            all instances.
+            up to and including the cutoff_time. Can either be a DataFrame, a single
+            value, or a string that can be parsed into a datetime. If a DataFrame is passed
+            the instance ids for which to calculate features must be in a column with the
+            same name as the target dataframe index or a column named `instance_id`.
+            The cutoff time values in the DataFrame must be in a column with the same name as
+            the target dataframe time index or a column named `time`. If the DataFrame has more
+            than two columns, any additional columns will be added to the resulting feature
+            matrix. If a single value is passed, this value will be used for all instances.
 
         instance_ids (list): List of instances on which to calculate features. Only
             used if cutoff_time is a single datetime.
@@ -239,27 +238,29 @@ def dfs(dataframes=None,
                            relationships=relationships,
                            target_dataframe_name="transactions",
                            features_only=True)
-    '''
+    """
     if not isinstance(entityset, EntitySet):
         entityset = EntitySet("dfs", dataframes, relationships)
 
-    dfs_object = DeepFeatureSynthesis(target_dataframe_name, entityset,
-                                      agg_primitives=agg_primitives,
-                                      trans_primitives=trans_primitives,
-                                      groupby_trans_primitives=groupby_trans_primitives,
-                                      max_depth=max_depth,
-                                      where_primitives=where_primitives,
-                                      allowed_paths=allowed_paths,
-                                      drop_exact=drop_exact,
-                                      drop_contains=drop_contains,
-                                      ignore_dataframes=ignore_dataframes,
-                                      ignore_columns=ignore_columns,
-                                      primitive_options=primitive_options,
-                                      max_features=max_features,
-                                      seed_features=seed_features)
+    dfs_object = DeepFeatureSynthesis(
+        target_dataframe_name,
+        entityset,
+        agg_primitives=agg_primitives,
+        trans_primitives=trans_primitives,
+        groupby_trans_primitives=groupby_trans_primitives,
+        max_depth=max_depth,
+        where_primitives=where_primitives,
+        allowed_paths=allowed_paths,
+        drop_exact=drop_exact,
+        drop_contains=drop_contains,
+        ignore_dataframes=ignore_dataframes,
+        ignore_columns=ignore_columns,
+        primitive_options=primitive_options,
+        max_features=max_features,
+        seed_features=seed_features,
+    )
 
-    features = dfs_object.build_features(
-        verbose=verbose, return_types=return_types)
+    features = dfs_object.build_features(verbose=verbose, return_types=return_types)
 
     trans, agg, groupby, where = _categorize_features(features)
 
@@ -275,35 +276,46 @@ def dfs(dataframes=None,
     if features_only:
         return features
 
-    feature_matrix = calculate_feature_matrix(features,
-                                              entityset=entityset,
-                                              cutoff_time=cutoff_time,
-                                              instance_ids=instance_ids,
-                                              training_window=training_window,
-                                              approximate=approximate,
-                                              cutoff_time_in_index=cutoff_time_in_index,
-                                              save_progress=save_progress,
-                                              chunk_size=chunk_size,
-                                              n_jobs=n_jobs,
-                                              dask_kwargs=dask_kwargs,
-                                              verbose=verbose,
-                                              progress_callback=progress_callback,
-                                              include_cutoff_time=include_cutoff_time)
+    assert (
+        features != []
+    ), "No features can be generated from the specified primitives. Please make sure the primitives you are using are compatible with the variable types in your data."
+
+    feature_matrix = calculate_feature_matrix(
+        features,
+        entityset=entityset,
+        cutoff_time=cutoff_time,
+        instance_ids=instance_ids,
+        training_window=training_window,
+        approximate=approximate,
+        cutoff_time_in_index=cutoff_time_in_index,
+        save_progress=save_progress,
+        chunk_size=chunk_size,
+        n_jobs=n_jobs,
+        dask_kwargs=dask_kwargs,
+        verbose=verbose,
+        progress_callback=progress_callback,
+        include_cutoff_time=include_cutoff_time,
+    )
     return feature_matrix, features
 
 
 def warn_unused_primitives(unused_primitives):
-    messages = ["  trans_primitives: {}\n",
-                "  agg_primitives: {}\n",
-                "  groupby_trans_primitives: {}\n",
-                "  where_primitives: {}\n"]
+    messages = [
+        "  trans_primitives: {}\n",
+        "  agg_primitives: {}\n",
+        "  groupby_trans_primitives: {}\n",
+        "  where_primitives: {}\n",
+    ]
     unused_string = ""
     for primitives, message in zip(unused_primitives, messages):
         if primitives:
             unused_string += message.format(primitives)
 
-    warning_msg = "Some specified primitives were not used during DFS:\n{}".format(unused_string) + \
-        "This may be caused by a using a value of max_depth that is too small, not setting interesting values, " + \
-        "or it may indicate no compatible columns for the primitive were found in the data."
+    warning_msg = (
+        "Some specified primitives were not used during DFS:\n{}".format(unused_string)
+        + "This may be caused by a using a value of max_depth that is too small, not setting interesting values, "
+        + "or it may indicate no compatible columns for the primitive were found in the data. If the DFS call "
+        + "contained multiple instances of a primitive in the list above, none of them were used."
+    )
 
     warnings.warn(warning_msg, UnusedPrimitiveWarning)

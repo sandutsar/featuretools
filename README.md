@@ -3,21 +3,34 @@
 </p>
 <p align="center">
 <i>"One of the holy grails of machine learning is to automate more and more of the feature engineering process."</i> ― Pedro Domingos, <a href="https://bit.ly/things_to_know_ml">A Few Useful Things to Know about Machine Learning</a>
-
 </p>
 
-
-
-![Tests](https://github.com/alteryx/featuretools/workflows/Tests/badge.svg)
-[![Coverage Status](https://codecov.io/gh/alteryx/featuretools/branch/main/graph/badge.svg)](https://codecov.io/gh/alteryx/featuretools)
-[![PyPI version](https://badge.fury.io/py/featuretools.svg?maxAge=2592000)](https://badge.fury.io/py/featuretools)
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/featuretools/badges/version.svg)](https://anaconda.org/conda-forge/featuretools)
-[![StackOverflow](http://img.shields.io/badge/questions-on_stackoverflow-blue.svg)](https://stackoverflow.com/questions/tagged/featuretools)
-[![Downloads](https://pepy.tech/badge/featuretools/month)](https://pepy.tech/project/featuretools)
+<p align="center">
+    <a href="https://github.com/alteryx/featuretools/actions?query=branch%3Amain+workflow%3ATests" target="_blank">
+        <img src="https://github.com/alteryx/featuretools/workflows/Tests/badge.svg?branch=main" alt="Tests" />
+    </a>
+    <a href="https://codecov.io/gh/alteryx/featuretools">
+        <img src="https://codecov.io/gh/alteryx/featuretools/branch/main/graph/badge.svg"/>
+    </a>
+    <a href='https://featuretools.alteryx.com/en/stable/?badge=stable'>
+        <img src='https://readthedocs.com/projects/feature-labs-inc-featuretools/badge/?version=stable' alt='Documentation Status' />
+    </a>
+    <a href="https://badge.fury.io/py/featuretools" target="_blank">
+        <img src="https://badge.fury.io/py/featuretools.svg?maxAge=2592000" alt="PyPI Version" />
+    </a>
+    <a href="https://anaconda.org/conda-forge/featuretools" target="_blank">
+        <img src="https://anaconda.org/conda-forge/featuretools/badges/version.svg" alt="Anaconda Version" />
+    </a>
+    <a href="https://stackoverflow.com/questions/tagged/featuretools" target="_blank">
+        <img src="http://img.shields.io/badge/questions-on_stackoverflow-blue.svg" alt="StackOverflow" />
+    </a>
+    <a href="https://pepy.tech/project/featuretools" target="_blank">
+        <img src="https://pepy.tech/badge/featuretools/month" alt="PyPI Downloads" />
+    </a>
+</p>
+<hr>
 
 [Featuretools](https://www.featuretools.com) is a python library for automated feature engineering. See the [documentation](https://docs.featuretools.com) for more information.
-
-
 
 ## Installation
 Install with pip
@@ -43,13 +56,13 @@ python -m pip install "featuretools[complete]"
 **Update checker** - Receive automatic notifications of new Featuretools releases
 
 ```
-python -m pip install "featuretools[update_checker]"
+python -m pip install "featuretools[updater]"
 ```
 
 **NLP Primitives** - Use Natural Language Processing Primitives:
 
 ```
-python -m pip install "featuretools[nlp_primitives]"
+python -m pip install "featuretools[nlp]"
 ```
 
 **TSFresh Primitives** - Use 60+ primitives from [tsfresh](https://tsfresh.readthedocs.io/en/latest/) within Featuretools
@@ -58,6 +71,11 @@ python -m pip install "featuretools[nlp_primitives]"
 python -m pip install "featuretools[tsfresh]"
 ```
 
+**SQL** - Automatic EntitySet generation from relational data stored in a SQL database: 
+
+```
+python -m pip install "featuretools[sql]"
+```
 ## Example
 Below is an example of using Deep Feature Synthesis (DFS) to perform automated feature engineering. In this example, we apply DFS to a multi-table dataset consisting of timestamped customer transactions.
 
@@ -88,7 +106,7 @@ customer_id                                                                     
 ```
 We now have a feature vector for each customer that can be used for machine learning. See the [documentation on Deep Feature Synthesis](https://featuretools.alteryx.com/en/stable/getting_started/afe.html) for more examples.
 
-Featuretools contains many [different types of built-in primitives](https://primitives.featurelabs.com/) for creating features. If the primitive you need is not included, Featuretools also allows you to [define your own custom primitives](https://featuretools.alteryx.com/en/stable/getting_started/primitives.html#defining-custom-primitives).
+Featuretools contains many different types of built-in primitives for creating features. If the primitive you need is not included, Featuretools also allows you to [define your own custom primitives](https://featuretools.alteryx.com/en/stable/getting_started/primitives.html#defining-custom-primitives).
 
 ## Demos
 **Predict Next Purchase**
@@ -108,8 +126,8 @@ The Featuretools community is happy to provide support to users of Featuretools.
 
 1. For usage questions, use [Stack Overflow](https://stackoverflow.com/questions/tagged/featuretools) with the `featuretools` tag.
 2. For bugs, issues, or feature requests start a [Github issue](https://github.com/alteryx/featuretools/issues).
-3. For discussion regarding development on the core library, use [Slack](https://join.slack.com/t/featuretools/shared_invite/enQtNTEwODEzOTEwMjg4LTQ1MjZlOWFmZDk2YzAwMjEzNTkwZTZkN2NmOGFjOGI4YzE5OGMyMGM5NGIxNTE4NjkzYWI3OWEwZjkyZGExYmQ).
-4. For everything else, the core developers can be reached by email at help@featuretools.com.
+3. For discussion regarding development on the core library, use [Slack](https://join.slack.com/t/alteryx-oss/shared_invite/zt-182tyvuxv-NzIn6eiCEf8TBziuKp0bNA).
+4. For everything else, the core developers can be reached by email at open_source_support@alteryx.com
 
 ## Citing Featuretools
 
@@ -130,8 +148,12 @@ BibTeX entry:
 }
 ```
 
-## Built at Alteryx Innovation Labs
+## Built at Alteryx
 
-<a href="https://www.alteryx.com/innovation-labs">
-    <img src="https://evalml-web-images.s3.amazonaws.com/alteryx_innovation_labs.png" alt="Alteryx Innovation Labs" />
-</a>
+**Featuretools** is an open source project maintained by [Alteryx](https://www.alteryx.com). To see the other open source projects we’re working on visit [Alteryx Open Source](https://www.alteryx.com/open-source). If building impactful data science pipelines is important to you or your business, please get in touch.
+
+<p align="center">
+  <a href="https://www.alteryx.com/open-source">
+    <img src="https://alteryx-oss-web-images.s3.amazonaws.com/OpenSource_Logo-01.png" alt="Alteryx Open Source" width="800"/>
+  </a>
+</p>

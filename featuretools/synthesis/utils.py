@@ -2,8 +2,9 @@ from featuretools.feature_base import (
     AggregationFeature,
     FeatureOutputSlice,
     GroupByTransformFeature,
-    TransformFeature
+    TransformFeature,
 )
+from featuretools.utils.gen_utils import camel_and_title_to_snake
 
 
 def _categorize_features(features):
@@ -53,7 +54,9 @@ def get_unused_primitives(specified, used):
     if not specified:
         return []
     specified = {
-        primitive.lower() if isinstance(primitive, str) else primitive.name
+        camel_and_title_to_snake(primitive)
+        if isinstance(primitive, str)
+        else primitive.name
         for primitive in specified
     }
-    return sorted(list(specified.difference(used)))
+    return sorted(specified.difference(used))

@@ -7,7 +7,7 @@ Whether you are a novice or experienced software developer, all contributions an
 There are many ways to contribute to Featuretools, with the most common ones being contribution of code or documentation to the project.
 
 **To contribute, you can:**
-1. Help users on our [Slack channel](https://join.slack.com/t/featuretools/shared_invite/enQtNTEwODEzOTEwMjg4LTQ1MjZlOWFmZDk2YzAwMjEzNTkwZTZkN2NmOGFjOGI4YzE5OGMyMGM5NGIxNTE4NjkzYWI3OWEwZjkyZGExYmQ). Answer questions under the featuretools tag on [Stack Overflow](https://stackoverflow.com/questions/tagged/featuretools)
+1. Help users on our [Slack channel](https://join.slack.com/t/alteryx-oss/shared_invite/zt-182tyvuxv-NzIn6eiCEf8TBziuKp0bNA). Answer questions under the featuretools tag on [Stack Overflow](https://stackoverflow.com/questions/tagged/featuretools)
 
 2. Submit a pull request for one of [Good First Issues](https://github.com/alteryx/featuretools/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+First+Issue%22)
 
@@ -22,7 +22,7 @@ There are many ways to contribute to Featuretools, with the most common ones bei
 
 ## Contributing to the Codebase
 
-Before starting major work, you should touch base with the maintainers of Featuretools by filing an issue on GitHub or posting a message in the [#development channel on Slack](https://featuretools.slack.com/join/shared_invite/enQtNTEwODEzOTEwMjg4LTZiZDdkYjZhZTVkMmVmZDIxNWZiNTVjNDQxYmZkMzI5NGRlOTg5YjcwYmJiNWE2YjIzZmFkMjc1NDZkNjBhZTQ). This will increase the likelihood your pull request will eventually get merged in.
+Before starting major work, you should touch base with the maintainers of Featuretools by filing an issue on GitHub or posting a message in the [#development channel on Slack](https://join.slack.com/t/alteryx-oss/shared_invite/zt-182tyvuxv-NzIn6eiCEf8TBziuKp0bNA). This will increase the likelihood your pull request will eventually get merged in.
 
 #### 1. Fork and clone repo
 * The code is hosted on GitHub, so you will need to use Git to fork the project and make changes to the codebase. To start, go to the [Featuretools GitHub page](https://github.com/alteryx/featuretools) and click the `Fork` button.
@@ -32,7 +32,7 @@ Before starting major work, you should touch base with the maintainers of Featur
   cd featuretools
   git remote add upstream https://github.com/alteryx/featuretools
   ```
-* Once you have obtained a copy of the code, you should create a development environment that is separate from your existing Python environment so that you can make and test changes without compromising your own work environment. You can run the following steps to create a separate virtual environment, and install Featuretools in editable mode. 
+* Once you have obtained a copy of the code, you should create a development environment that is separate from your existing Python environment so that you can make and test changes without compromising your own work environment. You can run the following steps to create a separate virtual environment, and install Featuretools in editable mode.
   ```bash
   python -m venv venv
   source venv/bin/activate
@@ -40,22 +40,43 @@ Before starting major work, you should touch base with the maintainers of Featur
   git checkout -b issue####-branch_name
   ```
 
-* You will need to install Spark, Scala, and GraphViz to run all unit tests:
+* You will need to install Spark, Scala, GraphViz, and Pandoc to run all unit tests & build docs:
 
-     **macOS** (use [Homebrew](https://brew.sh/)):
-     ```bash
+  > If you do not install Spark/Scala, you can still run the unit tests (the Spark tests will be skipped).
+
+  > Pandoc is only needed to build the documentation locally.
+
+     **macOS (Intel)** (use [Homebrew](https://brew.sh/)):
+     ```console
      brew tap AdoptOpenJDK/openjdk
      brew install --cask adoptopenjdk11
-     brew install scala
-     brew install apache-spark
-     brew install graphviz
+     brew install scala apache-spark graphviz pandoc
+     echo 'export JAVA_HOME=$(/usr/libexec/java_home)' >> ~/.zshrc
+     echo 'export PATH="/usr/local/opt/openjdk@11/bin:$PATH"' >> ~/.zshrc
+     ```
+
+     **macOS (M1)** (use [Homebrew](https://brew.sh/)):
+     ```console
+     brew install openjdk@11 scala apache-spark graphviz pandoc
+     echo 'export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"' >> ~/.zshrc
+     echo 'export CPPFLAGS="-I/opt/homebrew/opt/openjdk@11/include:$CPPFLAGS"' >> ~/.zprofile
+     sudo ln -sfn /opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
      ```
 
      **Ubuntu**:
-     ```bash
-     sudo apt install openjdk-11-jre openjdk-11-jdk scala graphviz -y
+     ```console
+     sudo apt install openjdk-11-jre openjdk-11-jdk scala graphviz pandoc -y
+     echo "export SPARK_HOME=/opt/spark" >> ~/.profile
+     echo "export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin" >> ~/.profile
+     echo "export PYSPARK_PYTHON=/usr/bin/python3" >> ~/.profile
      ```
-    
+
+     **Amazon Linux**:
+     ```console
+     sudo amazon-linux-extras install java-openjdk11 scala -y
+     amazon-linux-extras enable java-openjdk11
+     ```
+
 #### 2. Implement your Pull Request
 
 * Implement your pull request. If needed, add new tests or update the documentation.
@@ -78,6 +99,14 @@ Before starting major work, you should touch base with the maintainers of Featur
 
   # view docs locally
   open build/html/index.html
+  ```
+* Before you commit, a few lint fixing hooks will run. You can also manually run these.
+  ```bash
+  # run linting hooks only on changed files
+  pre-commit run
+
+  # run linting hooks on all files
+  pre-commit run --all-files
   ```
 
 #### 3. Submit your Pull Request

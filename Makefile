@@ -4,40 +4,61 @@ clean:
 	find . -name '*.pyc' -delete
 	find . -name __pycache__ -delete
 	find . -name '*~' -delete
+	find . -name '.coverage.*' -delete
 
 .PHONY: lint
 lint:
-	flake8 featuretools && isort --check-only featuretools
-	python docs/notebook_cleaner.py check-execution
+	python docs/notebook_version_standardizer.py check-execution
+	black . --config=./pyproject.toml --check
+	ruff . --config=./pyproject.toml
 
 .PHONY: lint-fix
 lint-fix:
-	autopep8 --in-place --recursive --max-line-length=100 --exclude="*/migrations/*" --select="E225,E303,E302,E203,E128,E231,E251,E271,E127,E126,E301,W291,W293,E226,E306,E221,E261,E111,E114" featuretools
-	isort featuretools
-	python docs/notebook_cleaner.py standardize
+	python docs/notebook_version_standardizer.py standardize
+	black . --config=./pyproject.toml
+	ruff . --fix --config=./pyproject.toml
 
 .PHONY: test
-test: lint
-	pytest featuretools/
+test:
+	python -m pytest featuretools/ -n auto
 
 .PHONY: testcoverage
-testcoverage: lint
-	pytest featuretools/ --cov=featuretools
+testcoverage:
+	python -m pytest featuretools/ --cov=featuretools -n auto
 
 .PHONY: installdeps
-installdeps:
-	pip install --upgrade pip
+installdeps: upgradepip
 	pip install -e .
-	pip install -r dev-requirements.txt
+
+.PHONY: installdeps-dev
+installdeps-dev: upgradepip
+	pip install -e ".[dev]"
+	pre-commit install
+
+.PHONY: installdeps-test
+installdeps-test: upgradepip
+	pip install -e ".[test]"
 
 .PHONY: checkdeps
 checkdeps:
-	$(eval allow_list='scipy|numpy|pandas|tqdm|cloudpickle|distributed|dask|psutil|click|pyspark|koalas|woodwork')
+	$(eval allow_list='holidays|scipy|numpy|pandas|tqdm|cloudpickle|distributed|dask|psutil|pyspark|woodwork')
 	pip freeze | grep -v "alteryx/featuretools.git" | grep -E $(allow_list) > $(OUTPUT_PATH)
 
-.PHONY: package_featuretools
-package_featuretools:
-	python setup.py sdist
-	$(eval FT_VERSION=$(shell python setup.py --version))
-	tar -zxvf "dist/featuretools-${FT_VERSION}.tar.gz"
-	mv "featuretools-${FT_VERSION}" unpacked_sdist
+.PHONY: upgradepip
+upgradepip:
+	python -m pip install --upgrade pip
+
+.PHONY: upgradebuild
+upgradebuild:
+	python -m pip install --upgrade build
+
+.PHONY: upgradesetuptools
+upgradesetuptools:
+	python -m pip install --upgrade setuptools
+
+.PHONY: package
+package: upgradepip upgradebuild upgradesetuptools
+	python -m build
+	$(eval PACKAGE=$(shell python -c 'import setuptools; setuptools.setup()' --version))
+	tar -zxvf "dist/featuretools-${PACKAGE}.tar.gz"
+	mv "featuretools-${PACKAGE}" unpacked_sdist

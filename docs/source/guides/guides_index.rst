@@ -10,8 +10,10 @@ Guides on more advanced Featuretools functionality
    specifying_primitive_options
    performance
    using_dask_entitysets
-   using_koalas_entitysets
+   using_spark_entitysets
    deployment
    advanced_custom_primitives
    feature_descriptions
    feature_selection
+   time_series
+   sql_database_integration
